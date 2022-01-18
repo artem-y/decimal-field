@@ -13,6 +13,9 @@ extension String {
 
 let package = Package(
     name: "decimal-field",
+    platforms: [
+        .iOS(.v14)
+    ],
     products: [
         .decimalFieldLibrary
     ],
