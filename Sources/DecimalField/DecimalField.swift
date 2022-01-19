@@ -28,7 +28,7 @@ public class DecimalField: UITextField {
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
-        placeholder = Char.zero
+        placeholder = .zero
         configureKeyboard()
         addActions()
     }
@@ -52,10 +52,10 @@ extension DecimalField {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
         let button = UIBarButtonItem(
-            title: Text.doneButton,
-            style: .done,
-            target: self,
-            action: #selector(stopEditing)
+            systemItem: .done,
+            primaryAction: UIAction { [weak self] _ in
+                self?.stopEditing()
+            }
         )
         toolBar.setItems([.flexibleSpace(), button], animated: true)
                 toolBar.setItems([button], animated: true)
@@ -64,10 +64,22 @@ extension DecimalField {
     }
 
     private func addActions() {
-        addTarget(self, action: #selector(clearZero), for: .editingDidBegin)
-        addTarget(self, action: #selector(reassignText), for: .editingChanged)
-        addTarget(self, action: #selector(ensureNonEmptyTrimmedText), for: .editingDidEndOnExit)
-        addTarget(self, action: #selector(ensureNonEmptyTrimmedText), for: .editingDidEnd)
+        handleEvents(.editingDidBegin) { [weak self] in
+            self?.clearZero()
+        }
+
+        handleEvents(.editingChanged) { [weak self] in
+            self?.reassignText()
+        }
+
+        handleEvents([.editingDidEndOnExit, .editingDidEnd]) { [weak self] in
+            self?.ensureNonEmptyTrimmedText()
+        }
+    }
+
+    private func handleEvents(_ controlEvents: UIControl.Event, handler: @escaping () -> Void) {
+        let action = UIAction { _ in handler() }
+        addAction(action, for: controlEvents)
     }
 
     private func process(_ text: String) -> String {
@@ -96,7 +108,7 @@ extension DecimalField {
             }
             return negativePrefix + intPart
         } else {
-            return "\(Char.zero)\(Char.dot)"
+            return "\(String.zero)\(Char.dot)"
         }
     }
 
@@ -107,23 +119,23 @@ extension DecimalField {
         self.text?.removeFirst()
     }
 
-    @objc private func clearZero() {
+    private func clearZero() {
         guard text.map(Double.init) == .zero else { return }
         text = .empty
     }
 
-    @objc private func reassignText() {
+    private func reassignText() {
         let text = self.text
         self.text = text
     }
 
-    @objc private func ensureNonEmptyTrimmedText() {
+    private func ensureNonEmptyTrimmedText() {
         if text == nil
             || text?.isEmpty == true
             || text == String(Char.dot)
             || text == Char.minus
             || text.map(Double.init) == .zero {
-            self.text = Char.zero
+            self.text = .zero
         } else if var text = text {
             var negativePrefix = String.empty
             if text.starts(with: Char.minus) {
@@ -131,22 +143,22 @@ extension DecimalField {
             }
 
             if text.contains(Char.dot) {
-                text = text.trimmingCharacters(in: .init(charactersIn: Char.zero))
+                text = text.trimmingCharacters(in: .init(charactersIn: .zero))
                 if text.starts(with: [Char.dot]) {
-                    text = Char.zero + text
+                    text = .zero + text
                 }
                 if text.hasSuffix(String(Char.dot)) {
                     text = String(text.dropLast())
                 }
-            } else if text.hasPrefix(Char.zero) {
-                let trimmedSubstring = text.drop { String($0) == Char.zero }
+            } else if text.hasPrefix(.zero) {
+                let trimmedSubstring = text.drop { String($0) == .zero }
                 text = String(trimmedSubstring)
             }
             self.text = negativePrefix + text
         }
     }
 
-    @objc private func stopEditing() {
+    private func stopEditing() {
         endEditing(true)
         resignFirstResponder()
     }
@@ -165,7 +177,6 @@ private extension DecimalField {
         static let comma = ","
         static let dot: Character = "."
         static let minus = "-"
-        static let zero = "0"
     }
 }
 

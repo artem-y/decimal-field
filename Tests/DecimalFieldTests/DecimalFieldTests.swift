@@ -28,9 +28,15 @@ final class DecimalFieldTests: XCTestCase {
 
     // MARK: - Test init
 
-    func test_emptyInit_setsText_toEmptyString() throws {
+    func test_emptyInit_setsText_toEmptyString() {
         let sut = SUT()
         XCTAssertEqual(sut.text, .empty)
+    }
+
+    func test_emptyInit_doesNotCreateMemoryLeaks() throws {
+        weak var sut = self.sut
+        self.sut = nil
+        XCTAssertNil(sut)
     }
 
     // MARK: - Test allowing negative numbers
