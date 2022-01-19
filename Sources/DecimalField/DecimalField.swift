@@ -9,7 +9,7 @@ import UIKit
 
 public class DecimalField: UITextField {
 
-    var allowsNegativeNumbers = true {
+    public var allowsNegativeNumbers = true {
         didSet {
             trimMinusIfNeeded()
         }
