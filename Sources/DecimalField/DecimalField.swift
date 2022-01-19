@@ -58,7 +58,6 @@ extension DecimalField {
             }
         )
         toolBar.setItems([.flexibleSpace(), button], animated: true)
-                toolBar.setItems([button], animated: true)
         toolBar.translatesAutoresizingMaskIntoConstraints = false
         return toolBar
     }
