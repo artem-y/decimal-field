@@ -82,33 +82,8 @@ extension DecimalField {
     }
 
     private func process(_ text: String) -> String {
-        guard !text.isEmpty else { return text }
-
-        var negativePrefix = String.empty
-        if allowsNegativeNumbers, text.starts(with: Char.minus) {
-            negativePrefix = Char.minus
-        }
-
-        guard text != negativePrefix else { return text }
-
-        let filteredText = text
-            .filter(Self.allowedSymbols.contains)
-            .replacingOccurrences(of: Char.comma, with: String(Char.dot))
-        var parts = filteredText
-            .split(separator: Char.dot, maxSplits: 1, omittingEmptySubsequences: true)
-        if parts.count > 1 {
-            parts[1].removeAll(where: { $0 == Char.dot })
-            let joinedText = parts.joined(separator: String(Char.dot))
-            return negativePrefix + joinedText
-        } else if parts.count == 1 {
-            var intPart = String(parts[0])
-            if filteredText.count > intPart.count {
-                intPart.append(Char.dot)
-            }
-            return negativePrefix + intPart
-        } else {
-            return "\(String.zero)\(Char.dot)"
-        }
+        var processor = TextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
+        return processor.process(text)
     }
 
     private func trimMinusIfNeeded() {

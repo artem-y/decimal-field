@@ -8,5 +8,6 @@
 import Foundation
 
 protocol DecimalTextProcessing {
-    func process(_ text: String) -> String
+    init(allowsNegativeNumbers: Bool)
+    mutating func process(_ text: String) -> String
 }
