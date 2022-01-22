@@ -82,15 +82,14 @@ extension DecimalField {
     }
 
     private func process(_ text: String) -> String {
-        var processor = DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
+        var processor = makeTextProcessor()
         return processor.process(text)
     }
 
     private func trimMinusIfNeeded() {
-        guard !allowsNegativeNumbers,
-              let text = text,
-              text.starts(with: Char.minus) else { return }
-        self.text?.removeFirst()
+        guard let text = text else { return }
+        let processor = makeTextProcessor()
+        self.text = processor.trimMinusIfNeeded(in: text)
     }
 
     private func clearZero() {
@@ -104,7 +103,7 @@ extension DecimalField {
     }
 
     private func ensureNonEmptyTrimmedText() {
-        var processor = DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
+        var processor = makeTextProcessor()
         text = processor.makeNonEmptyTrimmedText(from: text ?? .empty)
     }
 
@@ -112,21 +111,17 @@ extension DecimalField {
         endEditing(true)
         resignFirstResponder()
     }
+
+    private func makeTextProcessor() -> DecimalTextProcessor {
+        return DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
+    }
 }
 
 // MARK: - Default
 
 private extension DecimalField {
-    static let allowedSymbols = "0123456789.,"
-
     enum Text {
         static let doneButton = "Done"
-    }
-
-    enum Char {
-        static let comma = ","
-        static let dot: Character = "."
-        static let minus = "-"
     }
 }
 

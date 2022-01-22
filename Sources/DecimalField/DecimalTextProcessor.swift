@@ -66,6 +66,12 @@ extension DecimalTextProcessor {
             return self.text
         }
     }
+
+    func trimMinusIfNeeded(in text: String) -> String {
+        guard shouldTrimMinus(in: text) else { return text }
+        let trimmedText = String(text.dropFirst())
+        return trimmedText
+    }
 }
 
 // MARK: - Private Methods
@@ -140,6 +146,10 @@ extension DecimalTextProcessor {
         if shouldAddMinus {
             addMinus()
         }
+    }
+
+    private func shouldTrimMinus(in text: String) -> Bool {
+        return !allowsNegativeNumbers && text.first == minus
     }
 }
 

@@ -136,4 +136,32 @@ final class DecimalTextProcessorTests: XCTestCase {
     func test_makeNonEmptyTrimmedText_fromFloatWithoutFraction_keepsOnlyIntegerPart() {
         XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "30.0"), "30")
     }
+
+    // MARK: - Test trimMinusIfNeeded
+
+    func test_trimMinusIfNeeded_whenAllowsNegativeNumbers_doesNotTrim() {
+        let text = "-312"
+        XCTAssertEqual(sut.trimMinusIfNeeded(in: text), text)
+    }
+
+    func test_trimMinusIfNeeded_withoutMinus_doesNotTrim() {
+        sut = SUT(allowsNegativeNumbers: false)
+        let text = "56.7"
+        XCTAssertEqual(sut.trimMinusIfNeeded(in: text), text)
+    }
+
+    func test_trimMinusIfNeeded_inNegativeZeroFloat_trimsMinus() {
+        sut = SUT(allowsNegativeNumbers: false)
+        XCTAssertEqual(sut.trimMinusIfNeeded(in: "-0.0"), "0.0")
+    }
+
+    func test_trimMinusIfNeeded_inNegativeNonZeroFloat_trimsMinus() {
+        sut = SUT(allowsNegativeNumbers: false)
+        XCTAssertEqual(sut.trimMinusIfNeeded(in: "-5.8"), "5.8")
+    }
+
+    func test_trimMinusIfNeeded_inNegativeInteger_trimsMinus() {
+        sut = SUT(allowsNegativeNumbers: false)
+        XCTAssertEqual(sut.trimMinusIfNeeded(in: "-690"), "690")
+    }
 }
