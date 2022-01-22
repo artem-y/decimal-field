@@ -10,7 +10,6 @@ import Foundation
 struct DecimalTextProcessor {
     private let allowsNegativeNumbers: Bool
 
-    private let allowedSymbols = Self.allowedSymbols
     private let minus = Self.minus
     private let floatingPoint = Self.floatingPoint
     private let comma = Self.comma
@@ -34,36 +33,36 @@ struct DecimalTextProcessor {
 // MARK: - Processing
 
 extension DecimalTextProcessor {
-    mutating func process(_ text: String) -> String {
-        if text == String(minus) {
-            return text
+    mutating func process(_ input: String) -> String {
+        if input == String(minus) {
+            return input
         }
 
-        self.text = text
+        text = input
 
         replaceCommasWithFloatingPoints()
         checkIfHasMinus()
         filterAllowedSymbols()
 
-        if let floatingPointIndex = self.text.firstIndex(of: floatingPoint) {
+        if let floatingPointIndex = text.firstIndex(of: floatingPoint) {
             keepSingleFloatingPoint(at: floatingPointIndex)
             addZeroToStartIfNeeded()
         }
 
         addMinusIfNeeded()
 
-        return self.text
+        return text
     }
 
     mutating func makeNonEmptyTrimmedText(from processedText: String) -> String {
-        self.text = processedText
+        text = processedText
 
         if isZeroEquivalent {
             return .zero
         } else {
             checkIfHasMinus()
             trimText()
-            return self.text
+            return text
         }
     }
 
@@ -97,7 +96,7 @@ extension DecimalTextProcessor {
                 text.removeLast()
             }
         } else if text.hasPrefix(.zero) {
-            let trimmedSubstring = text.drop { String($0) == .zero }
+            let trimmedSubstring = text.drop { $0 == "0" }
             text = String(trimmedSubstring)
         }
 
@@ -109,7 +108,11 @@ extension DecimalTextProcessor {
     }
 
     private mutating func filterAllowedSymbols() {
-        text = text.filter(allowedSymbols.contains)
+        text = text.filter(isAllowedSymbol)
+    }
+
+    private func isAllowedSymbol(_ character: Character) -> Bool {
+        return character.isNumber || character == floatingPoint
     }
 
     private mutating func removeFloatingPoints() {
@@ -127,19 +130,19 @@ extension DecimalTextProcessor {
     }
 
     private mutating func checkIfHasMinus() {
-        var previousChar: Character?
+        var previousCharacter: Character?
 
-        for char in text {
-            if let previousChar = previousChar {
-                if previousChar.isNumber {
+        for character in text {
+            if let previousCharacter = previousCharacter {
+                if previousCharacter.isNumber {
                     continue
-                } else if previousChar == minus, char.isNumber {
+                } else if previousCharacter == minus, character.isNumber {
                     hasNegativePrefix = true
                     break
                 }
             }
 
-            previousChar = char
+            previousCharacter = character
         }
     }
 
@@ -161,7 +164,6 @@ extension DecimalTextProcessor {
 // MARK: - Default Values
 
 extension DecimalTextProcessor {
-    private static let allowedSymbols = "1234567890."
     private static let minus: Character = "-"
     private static let floatingPoint: Character = "."
     private static let comma = ","
