@@ -87,4 +87,53 @@ final class TextProcessorTests: XCTestCase {
         sut = SUT(allowsNegativeNumbers: false)
         XCTAssertEqual(sut.process("- 125"), "125")
     }
+
+    // MARK: - Test makeNonEmptyTrimmed text
+
+    func test_makeNonEmptyTrimmedText_whenNothingToTrim_doesNotTrim() {
+        let text = "851"
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: text), text)
+    }
+
+    func test_makeNonEmptyTrimmedText_fromEmptyText_returnsZero() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: .empty), .zero)
+    }
+
+    func test_makeNonEmptyTrimmedText_fromFloatingPoint_returnsZero() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "."), .zero)
+    }
+
+    func test_makeNonEmptyTrimmedText_fromNegativeZeroFloat_returnsZero() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "-0.0"), .zero)
+    }
+
+    func test_makeNonEmptyTrimmedText_fromIntegerStartingWithZero_trimsZero() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "01"), "1")
+    }
+
+    func test_makeNonEmptyTrimmedText_fromNegativeInteger_doesNotTrim() {
+        let text = "-31"
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: text), text)
+    }
+
+    func test_makeNonEmptyTrimmedText_fromNegativeIntegerStartingWithZero_trimsZero() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "-01"), "-1")
+    }
+
+    func test_makeNonEmptyTrimmedText_fromIntegerEndingWithZero_doesNotTrimZeroEnding() {
+        let text = "31500"
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: text), text)
+    }
+
+    func test_makeNonEmptyTrimmedText_fromFloatEndingWithZero_trimsZeroEnding() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "2.0850"), "2.085")
+    }
+
+    func test_makeNonEmptyTrimmedText_fromFloatWithExtraZeros_trimsExtraZeros() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "00.350"), "0.35")
+    }
+
+    func test_makeNonEmptyTrimmedText_fromFloatWithoutFraction_keepsOnlyIntegerPart() {
+        XCTAssertEqual(sut.makeNonEmptyTrimmedText(from: "30.0"), "30")
+    }
 }

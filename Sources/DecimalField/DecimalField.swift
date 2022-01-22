@@ -104,32 +104,8 @@ extension DecimalField {
     }
 
     private func ensureNonEmptyTrimmedText() {
-        if text == nil
-            || text?.isEmpty == true
-            || text == String(Char.dot)
-            || text == Char.minus
-            || text.map(Double.init) == .zero {
-            self.text = .zero
-        } else if var text = text {
-            var negativePrefix = String.empty
-            if text.starts(with: Char.minus) {
-                negativePrefix = String(text.removeFirst())
-            }
-
-            if text.contains(Char.dot) {
-                text = text.trimmingCharacters(in: .init(charactersIn: .zero))
-                if text.starts(with: [Char.dot]) {
-                    text = .zero + text
-                }
-                if text.hasSuffix(String(Char.dot)) {
-                    text = String(text.dropLast())
-                }
-            } else if text.hasPrefix(.zero) {
-                let trimmedSubstring = text.drop { String($0) == .zero }
-                text = String(trimmedSubstring)
-            }
-            self.text = negativePrefix + text
-        }
+        var processor = DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
+        text = processor.makeNonEmptyTrimmedText(from: text ?? .empty)
     }
 
     private func stopEditing() {

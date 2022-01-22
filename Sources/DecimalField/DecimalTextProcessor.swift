@@ -43,14 +43,56 @@ extension DecimalTextProcessor {
 
         if let floatingPointIndex = self.text.firstIndex(of: floatingPoint) {
             keepSingleFloatingPoint(at: floatingPointIndex)
-            addZeroIfNeeded()
+            addZeroToStartIfNeeded()
         }
 
+        addMinusIfNeeded()
+
+        return self.text
+    }
+
+    mutating func makeNonEmptyTrimmedText(from text: String) -> String {
+        self.text = text
+
+        if isZeroEquivalent {
+            return .zero
+        } else {
+            checkIfHasMinus()
+            trimText()
+            return self.text
+        }
+    }
+
+    private var isZeroEquivalent: Bool {
+        text.isEmpty || text == String(floatingPoint) || Double(text) == .zero
+    }
+
+    private mutating func trimText() {
+        if hasNegativePrefix {
+            text.removeFirst()
+        }
+
+        if text.contains(floatingPoint) {
+            let zeroSet = CharacterSet(charactersIn: .zero)
+            text = text.trimmingCharacters(in: zeroSet)
+
+            addZeroToStartIfNeeded()
+
+            if text.last == floatingPoint {
+                text.removeLast()
+            }
+        } else if text.hasPrefix(.zero) {
+            let trimmedSubstring = text.drop { String($0) == .zero }
+            text = String(trimmedSubstring)
+        }
+
+        addMinusIfNeeded()
+    }
+
+    private mutating func addMinusIfNeeded() {
         if shouldAddMinus {
             addMinus()
         }
-
-        return self.text
     }
 }
 
@@ -69,7 +111,7 @@ extension DecimalTextProcessor {
         text = text.replacingOccurrences(of: String(floatingPoint), with: String.empty)
     }
 
-    private mutating func addZeroIfNeeded() {
+    private mutating func addZeroToStartIfNeeded() {
         guard text.first == floatingPoint else { return }
         text = .zero + text
     }
