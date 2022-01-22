@@ -1,5 +1,5 @@
 //
-//  TextProcessorTests.swift
+//  DecimalTextProcessorTests.swift
 //  
 //
 //  Created by Artem Yelizarov on 20.01.2022.
@@ -8,7 +8,7 @@
 import XCTest
 @testable import DecimalField
 
-final class TextProcessorTests: XCTestCase {
+final class DecimalTextProcessorTests: XCTestCase {
     typealias SUT = DecimalTextProcessor
 
     private var sut: SUT!
@@ -88,7 +88,7 @@ final class TextProcessorTests: XCTestCase {
         XCTAssertEqual(sut.process("- 125"), "125")
     }
 
-    // MARK: - Test makeNonEmptyTrimmed text
+    // MARK: - Test makeNonEmptyTrimmedText
 
     func test_makeNonEmptyTrimmedText_whenNothingToTrim_doesNotTrim() {
         let text = "851"

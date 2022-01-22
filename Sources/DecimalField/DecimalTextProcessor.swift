@@ -22,6 +22,10 @@ struct DecimalTextProcessor {
         allowsNegativeNumbers && hasNegativePrefix
     }
 
+    private var isZeroEquivalent: Bool {
+        text.isEmpty || text == String(floatingPoint) || Double(text) == .zero
+    }
+
     init(allowsNegativeNumbers: Bool = true) {
         self.allowsNegativeNumbers = allowsNegativeNumbers
     }
@@ -51,8 +55,8 @@ extension DecimalTextProcessor {
         return self.text
     }
 
-    mutating func makeNonEmptyTrimmedText(from text: String) -> String {
-        self.text = text
+    mutating func makeNonEmptyTrimmedText(from processedText: String) -> String {
+        self.text = processedText
 
         if isZeroEquivalent {
             return .zero
@@ -62,11 +66,11 @@ extension DecimalTextProcessor {
             return self.text
         }
     }
+}
 
-    private var isZeroEquivalent: Bool {
-        text.isEmpty || text == String(floatingPoint) || Double(text) == .zero
-    }
+// MARK: - Private Methods
 
+extension DecimalTextProcessor {
     private mutating func trimText() {
         if hasNegativePrefix {
             text.removeFirst()
@@ -89,16 +93,6 @@ extension DecimalTextProcessor {
         addMinusIfNeeded()
     }
 
-    private mutating func addMinusIfNeeded() {
-        if shouldAddMinus {
-            addMinus()
-        }
-    }
-}
-
-// MARK: - Private Methods
-
-extension DecimalTextProcessor {
     private mutating func replaceCommasWithFloatingPoints() {
         text = text.replacingOccurrences(of: comma, with: String(floatingPoint))
     }
@@ -140,6 +134,12 @@ extension DecimalTextProcessor {
 
     private mutating func addMinus() {
         text = String(minus) + text
+    }
+
+    private mutating func addMinusIfNeeded() {
+        if shouldAddMinus {
+            addMinus()
+        }
     }
 }
 
