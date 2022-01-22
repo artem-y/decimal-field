@@ -27,9 +27,9 @@ struct DecimalTextProcessor {
     }
 }
 
-// MARK: - DecimalTextProcessing
+// MARK: - Processing
 
-extension DecimalTextProcessor: DecimalTextProcessing {
+extension DecimalTextProcessor {
     mutating func process(_ text: String) -> String {
         if text == String(minus) {
             return text
