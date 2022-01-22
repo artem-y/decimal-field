@@ -8,7 +8,7 @@
 import Foundation
 
 struct DecimalTextProcessor {
-    let allowsNegativeNumbers: Bool
+    private let allowsNegativeNumbers: Bool
 
     private let allowedSymbols = Self.allowedSymbols
     private let minus = Self.minus
