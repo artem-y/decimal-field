@@ -9,7 +9,7 @@ import XCTest
 @testable import DecimalField
 
 final class TextProcessorTests: XCTestCase {
-    typealias SUT = DecimalField.TextProcessor
+    typealias SUT = DecimalTextProcessor
 
     private var sut: SUT!
 
@@ -23,7 +23,7 @@ final class TextProcessorTests: XCTestCase {
         sut = nil
     }
 
-    // MARK: - Tests
+    // MARK: - Test process
 
     func test_process_emptyText_returnsEmptyText() {
         XCTAssertEqual(sut.process(.empty), .empty)
@@ -72,6 +72,12 @@ final class TextProcessorTests: XCTestCase {
         XCTAssertEqual(sut.process("."), "0.")
     }
 
+    func test_process_textWithComma_replacesCommaWithDot() {
+        XCTAssertEqual(sut.process("82,6"), "82.6")
+    }
+
+    // MARK: - Test allowsNegativeNumbers
+
     func test_allowsNegativeNumbers_whenFalse_trimsMinus() {
         sut = SUT(allowsNegativeNumbers: false)
         XCTAssertEqual(sut.process("-783"), "783")
@@ -80,9 +86,5 @@ final class TextProcessorTests: XCTestCase {
     func test_allowsNegativeNumbers_whenFalse_removesUnattachedMinus() {
         sut = SUT(allowsNegativeNumbers: false)
         XCTAssertEqual(sut.process("- 125"), "125")
-    }
-
-    func test_process_textWithComma_replacesCommaWithDot() {
-        XCTAssertEqual(sut.process("82,6"), "82.6")
     }
 }

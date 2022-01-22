@@ -1,5 +1,5 @@
 //
-//  DecimalField+TextProcessor.swift
+//  DecimalTextProcessor.swift
 //  
 //
 //  Created by Artem Yelizarov on 20.01.2022.
@@ -7,31 +7,29 @@
 
 import Foundation
 
-extension DecimalField {
-    struct TextProcessor {
-        let allowsNegativeNumbers: Bool
+struct DecimalTextProcessor {
+    let allowsNegativeNumbers: Bool
 
-        private let allowedSymbols = "1234567890."
-        private let minus: Character = "-"
-        private let floatingPoint: Character = "."
-        private let comma = ","
+    private let allowedSymbols = "1234567890."
+    private let minus: Character = "-"
+    private let floatingPoint: Character = "."
+    private let comma = ","
 
-        private var text: String = .empty
-        private var hasNegativePrefix = false
+    private var text: String = .empty
+    private var hasNegativePrefix = false
 
-        private var shouldAddMinus: Bool {
-            allowsNegativeNumbers && hasNegativePrefix
-        }
+    private var shouldAddMinus: Bool {
+        allowsNegativeNumbers && hasNegativePrefix
+    }
 
-        init(allowsNegativeNumbers: Bool = true) {
-            self.allowsNegativeNumbers = allowsNegativeNumbers
-        }
+    init(allowsNegativeNumbers: Bool = true) {
+        self.allowsNegativeNumbers = allowsNegativeNumbers
     }
 }
 
 // MARK: - DecimalTextProcessing
 
-extension DecimalField.TextProcessor: DecimalTextProcessing {
+extension DecimalTextProcessor: DecimalTextProcessing {
     mutating func process(_ text: String) -> String {
         if text == String(minus) {
             return text
@@ -58,7 +56,7 @@ extension DecimalField.TextProcessor: DecimalTextProcessing {
 
 // MARK: - Private Methods
 
-extension DecimalField.TextProcessor {
+extension DecimalTextProcessor {
     private mutating func replaceCommasWithFloatingPoints() {
         text = text.replacingOccurrences(of: comma, with: String(floatingPoint))
     }

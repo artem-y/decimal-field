@@ -82,7 +82,7 @@ extension DecimalField {
     }
 
     private func process(_ text: String) -> String {
-        var processor = TextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
+        var processor = DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
         return processor.process(text)
     }
 
