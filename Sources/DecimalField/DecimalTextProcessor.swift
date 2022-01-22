@@ -10,10 +10,10 @@ import Foundation
 struct DecimalTextProcessor {
     let allowsNegativeNumbers: Bool
 
-    private let allowedSymbols = "1234567890."
-    private let minus: Character = "-"
-    private let floatingPoint: Character = "."
-    private let comma = ","
+    private let allowedSymbols = Self.allowedSymbols
+    private let minus = Self.minus
+    private let floatingPoint = Self.floatingPoint
+    private let comma = Self.comma
 
     private var text: String = .empty
     private var hasNegativePrefix = false
@@ -99,4 +99,13 @@ extension DecimalTextProcessor {
     private mutating func addMinus() {
         text = String(minus) + text
     }
+}
+
+// MARK: - Default Values
+
+extension DecimalTextProcessor {
+    private static let allowedSymbols = "1234567890."
+    private static let minus: Character = "-"
+    private static let floatingPoint: Character = "."
+    private static let comma = ","
 }
