@@ -81,15 +81,27 @@ extension DecimalField {
         addAction(action, for: controlEvents)
     }
 
-    private func process(_ text: String) -> String {
-        var processor = makeTextProcessor()
-        return processor.process(text)
+    private func stopEditing() {
+        endEditing(true)
+        resignFirstResponder()
     }
+
+    private func reassignText() {
+        let text = self.text
+        self.text = text
+    }
+
+    // MARK: Text Processing
 
     private func trimMinusIfNeeded() {
         guard let text = text else { return }
         let processor = makeTextProcessor()
         self.text = processor.trimMinusIfNeeded(in: text)
+    }
+
+    private func process(_ text: String) -> String {
+        var processor = makeTextProcessor()
+        return processor.process(text)
     }
 
     private func clearZero() {
@@ -98,19 +110,9 @@ extension DecimalField {
         self.text = processor.clearZero(text)
     }
 
-    private func reassignText() {
-        let text = self.text
-        self.text = text
-    }
-
     private func ensureNonEmptyTrimmedText() {
         var processor = makeTextProcessor()
         text = processor.makeNonEmptyTrimmedText(from: text ?? .empty)
-    }
-
-    private func stopEditing() {
-        endEditing(true)
-        resignFirstResponder()
     }
 
     private func makeTextProcessor() -> DecimalTextProcessor {
