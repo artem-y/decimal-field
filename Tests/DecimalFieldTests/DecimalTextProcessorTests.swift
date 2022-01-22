@@ -164,4 +164,19 @@ final class DecimalTextProcessorTests: XCTestCase {
         sut = SUT(allowsNegativeNumbers: false)
         XCTAssertEqual(sut.trimMinusIfNeeded(in: "-690"), "690")
     }
+
+    // MARK: - Test clearZero
+
+    func test_clearZero_whenTextIsZero_returnsEmptyText() {
+        XCTAssertEqual(sut.clearZero(.zero), .empty)
+    }
+
+    func test_clearZero_forFloatingPointZero_returnsEmptyText() {
+        XCTAssertEqual(sut.clearZero("0.0"), .empty)
+    }
+
+    func test_clearZero_forNonZeroText_doesNotChangeText() {
+        let text = "012030"
+        XCTAssertEqual(sut.clearZero(text), text)
+    }
 }

@@ -72,6 +72,11 @@ extension DecimalTextProcessor {
         let trimmedText = String(text.dropFirst())
         return trimmedText
     }
+
+    func clearZero(_ text: String) -> String {
+        let isZero = Double(text) == .zero
+        return isZero ? .empty : text
+    }
 }
 
 // MARK: - Private Methods

@@ -93,8 +93,9 @@ extension DecimalField {
     }
 
     private func clearZero() {
-        guard text.map(Double.init) == .zero else { return }
-        text = .empty
+        guard let text = text else { return }
+        let processor = makeTextProcessor()
+        self.text = processor.clearZero(text)
     }
 
     private func reassignText() {
