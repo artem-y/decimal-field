@@ -51,15 +51,19 @@ extension DecimalField {
     private func makeKeyboardToolBar() -> UIToolbar {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
-        let button = UIBarButtonItem(
+        let button = makeDoneButton()
+        toolBar.setItems([.flexibleSpace(), button], animated: true)
+        toolBar.translatesAutoresizingMaskIntoConstraints = false
+        return toolBar
+    }
+
+    private func makeDoneButton() -> UIBarButtonItem {
+        return UIBarButtonItem(
             systemItem: .done,
             primaryAction: UIAction { [weak self] _ in
                 self?.stopEditing()
             }
         )
-        toolBar.setItems([.flexibleSpace(), button], animated: true)
-        toolBar.translatesAutoresizingMaskIntoConstraints = false
-        return toolBar
     }
 
     private func addActions() {
@@ -119,12 +123,3 @@ extension DecimalField {
         return DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
     }
 }
-
-// MARK: - Default
-
-private extension DecimalField {
-    enum Text {
-        static let doneButton = "Done"
-    }
-}
-

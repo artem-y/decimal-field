@@ -9,9 +9,7 @@ import Foundation
 
 struct DecimalTextProcessor {
     private let allowsNegativeNumbers: Bool
-
     private let floatingPoint = Self.floatingPoint
-
     private var text: String = .empty
     private var hasNegativePrefix = false
 
