@@ -51,15 +51,19 @@ extension DecimalField {
     private func makeKeyboardToolBar() -> UIToolbar {
         let toolBar = UIToolbar()
         toolBar.sizeToFit()
-        let button = UIBarButtonItem(
+        let button = makeDoneButton()
+        toolBar.setItems([.flexibleSpace(), button], animated: true)
+        toolBar.translatesAutoresizingMaskIntoConstraints = false
+        return toolBar
+    }
+
+    private func makeDoneButton() -> UIBarButtonItem {
+        return UIBarButtonItem(
             systemItem: .done,
             primaryAction: UIAction { [weak self] _ in
                 self?.stopEditing()
             }
         )
-        toolBar.setItems([.flexibleSpace(), button], animated: true)
-        toolBar.translatesAutoresizingMaskIntoConstraints = false
-        return toolBar
     }
 
     private func addActions() {
@@ -81,46 +85,9 @@ extension DecimalField {
         addAction(action, for: controlEvents)
     }
 
-    private func process(_ text: String) -> String {
-        guard !text.isEmpty else { return text }
-
-        var negativePrefix = String.empty
-        if allowsNegativeNumbers, text.starts(with: Char.minus) {
-            negativePrefix = Char.minus
-        }
-
-        guard text != negativePrefix else { return text }
-
-        let filteredText = text
-            .filter(Self.allowedSymbols.contains)
-            .replacingOccurrences(of: Char.comma, with: String(Char.dot))
-        var parts = filteredText
-            .split(separator: Char.dot, maxSplits: 1, omittingEmptySubsequences: true)
-        if parts.count > 1 {
-            parts[1].removeAll(where: { $0 == Char.dot })
-            let joinedText = parts.joined(separator: String(Char.dot))
-            return negativePrefix + joinedText
-        } else if parts.count == 1 {
-            var intPart = String(parts[0])
-            if filteredText.count > intPart.count {
-                intPart.append(Char.dot)
-            }
-            return negativePrefix + intPart
-        } else {
-            return "\(String.zero)\(Char.dot)"
-        }
-    }
-
-    private func trimMinusIfNeeded() {
-        guard !allowsNegativeNumbers,
-              let text = text,
-              text.starts(with: Char.minus) else { return }
-        self.text?.removeFirst()
-    }
-
-    private func clearZero() {
-        guard text.map(Double.init) == .zero else { return }
-        text = .empty
+    private func stopEditing() {
+        endEditing(true)
+        resignFirstResponder()
     }
 
     private func reassignText() {
@@ -128,54 +95,31 @@ extension DecimalField {
         self.text = text
     }
 
+    // MARK: Text Processing
+
+    private func trimMinusIfNeeded() {
+        guard let text = text else { return }
+        let processor = makeTextProcessor()
+        self.text = processor.trimMinusIfNeeded(in: text)
+    }
+
+    private func process(_ text: String) -> String {
+        var processor = makeTextProcessor()
+        return processor.process(text)
+    }
+
+    private func clearZero() {
+        guard let text = text else { return }
+        let processor = makeTextProcessor()
+        self.text = processor.clearZero(text)
+    }
+
     private func ensureNonEmptyTrimmedText() {
-        if text == nil
-            || text?.isEmpty == true
-            || text == String(Char.dot)
-            || text == Char.minus
-            || text.map(Double.init) == .zero {
-            self.text = .zero
-        } else if var text = text {
-            var negativePrefix = String.empty
-            if text.starts(with: Char.minus) {
-                negativePrefix = String(text.removeFirst())
-            }
-
-            if text.contains(Char.dot) {
-                text = text.trimmingCharacters(in: .init(charactersIn: .zero))
-                if text.starts(with: [Char.dot]) {
-                    text = .zero + text
-                }
-                if text.hasSuffix(String(Char.dot)) {
-                    text = String(text.dropLast())
-                }
-            } else if text.hasPrefix(.zero) {
-                let trimmedSubstring = text.drop { String($0) == .zero }
-                text = String(trimmedSubstring)
-            }
-            self.text = negativePrefix + text
-        }
+        var processor = makeTextProcessor()
+        text = processor.makeNonEmptyTrimmedText(from: text ?? .empty)
     }
 
-    private func stopEditing() {
-        endEditing(true)
-        resignFirstResponder()
+    private func makeTextProcessor() -> DecimalTextProcessor {
+        return DecimalTextProcessor(allowsNegativeNumbers: allowsNegativeNumbers)
     }
 }
-
-// MARK: - Default
-
-private extension DecimalField {
-    static let allowedSymbols = "0123456789.,"
-
-    enum Text {
-        static let doneButton = "Done"
-    }
-
-    enum Char {
-        static let comma = ","
-        static let dot: Character = "."
-        static let minus = "-"
-    }
-}
-

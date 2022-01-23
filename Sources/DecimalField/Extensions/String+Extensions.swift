@@ -7,5 +7,6 @@
 
 extension String {
     static let empty = String()
+    static let minus = "-"
     static let zero = "0"
 }
