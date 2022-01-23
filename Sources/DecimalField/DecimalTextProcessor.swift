@@ -10,9 +10,7 @@ import Foundation
 struct DecimalTextProcessor {
     private let allowsNegativeNumbers: Bool
 
-    private let minus = Self.minus
     private let floatingPoint = Self.floatingPoint
-    private let comma = Self.comma
 
     private var text: String = .empty
     private var hasNegativePrefix = false
@@ -34,7 +32,7 @@ struct DecimalTextProcessor {
 
 extension DecimalTextProcessor {
     mutating func process(_ input: String) -> String {
-        if input == String(minus) {
+        if input == .minus {
             return input
         }
 
@@ -96,7 +94,7 @@ extension DecimalTextProcessor {
                 text.removeLast()
             }
         } else if text.hasPrefix(.zero) {
-            let trimmedSubstring = text.drop { $0 == "0" }
+            let trimmedSubstring = text.drop { $0 == .zero }
             text = String(trimmedSubstring)
         }
 
@@ -104,7 +102,7 @@ extension DecimalTextProcessor {
     }
 
     private mutating func replaceCommasWithFloatingPoints() {
-        text = text.replacingOccurrences(of: comma, with: String(floatingPoint))
+        text = text.replacingOccurrences(of: Self.comma, with: String(floatingPoint))
     }
 
     private mutating func filterAllowedSymbols() {
@@ -136,7 +134,7 @@ extension DecimalTextProcessor {
             if let previousCharacter = previousCharacter {
                 if previousCharacter.isNumber {
                     continue
-                } else if previousCharacter == minus, character.isNumber {
+                } else if previousCharacter == .minus, character.isNumber {
                     hasNegativePrefix = true
                     break
                 }
@@ -147,7 +145,7 @@ extension DecimalTextProcessor {
     }
 
     private mutating func addMinus() {
-        text = String(minus) + text
+        text = .minus + text
     }
 
     private mutating func addMinusIfNeeded() {
@@ -157,14 +155,13 @@ extension DecimalTextProcessor {
     }
 
     private func shouldTrimMinus(in text: String) -> Bool {
-        return !allowsNegativeNumbers && text.first == minus
+        return !allowsNegativeNumbers && text.first == .minus
     }
 }
 
 // MARK: - Default Values
 
 extension DecimalTextProcessor {
-    private static let minus: Character = "-"
     private static let floatingPoint: Character = "."
     private static let comma = ","
 }
