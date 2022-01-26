@@ -27,6 +27,8 @@ By default, only integer or decimal numbers and a minus are allowed as input. If
 Swift Package Manager is a preferred way to connect `DecimalField` to your Xcode project.
 Setting exact version dependency rule is advised to prevent pulling in unwanted changes. You can find versions in the [Releases](https://github.com/artem-y/decimal-field/releases) section.  
 
+To make it even safer, please feel free to fork the repository.
+
 ## Licence
 This repository is provided under the MIT licence (see [LICENSE](LICENSE)).  
 
