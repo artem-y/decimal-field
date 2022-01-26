@@ -10,7 +10,7 @@ import UIKit
 /// Text field that manages decimal input.
 ///
 /// It provides default keyboard with system Done button and processes input, allowing only
-/// decimal numbers as input. Few other cases of commonly needed behaviour are included:
+/// decimal numbers. Few other cases of commonly needed behaviour are included:
 /// - trimming zeros in a decimal number when editing ends
 /// - resetting the input to `0` when editing ends and the field is empty
 /// - clearing the field when editing begins and the input is `0`
