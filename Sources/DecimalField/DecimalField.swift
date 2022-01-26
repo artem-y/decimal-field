@@ -7,14 +7,30 @@
 
 import UIKit
 
+/// Text field that manages decimal input.
+///
+/// It provides default keyboard with system Done button and processes input, allowing only
+/// decimal numbers. Few other cases of commonly needed behaviour are included:
+/// - trimming zeros in a decimal number when editing ends
+/// - resetting the input to `0` when editing ends and the field is empty
+/// - clearing the field when editing begins and the input is `0`
+///
+/// These are "always on" by default, but will become customizable in the future.
 public class DecimalField: UITextField {
 
+    /// Tells the text field whether it should allow `minus` in the input.
+    ///
+    /// By default this property is set to `true`. When the text field already has input with minus and this property is reset to `false`,
+    /// the minus will get immediately removed.
     public var allowsNegativeNumbers = true {
         didSet {
             trimMinusIfNeeded()
         }
     }
 
+    /// Same as the `UITextField`'s property, but the text is processed.
+    ///
+    /// Whenever this property is set, it filters and modifies the new value and stores the processed result.
     public override var text: String? {
         get {
             super.text
