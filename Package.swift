@@ -12,7 +12,7 @@ extension String {
 // MARK: - Package
 
 let package = Package(
-    name: "decimal-field",
+    name: .DecimalField,
     platforms: [
         .iOS(.v14)
     ],
