@@ -1,5 +1,10 @@
 # DecimalField
-Lightweight implementation of a text field that filters and manages decimal input. It only allows integer or floating point numbers and a minus by default. It also includes behaviour like trimming extra zeros in a decimal number when editing ends, or clearing out the zero when editing begins etc.
+Lightweight implementation of a text field that filters and manages decimal input. It only allows integer or floating point numbers and a minus by default. It also includes few other behaviours that are often needed:
+- trimming zeros in a decimal number when editing ends
+- resetting the input to zero when editing ends and the field is empty
+- clearing the field when editing begins and the text is zero  
+
+These are "always on" by default, but will become customizable in the future.
 
 ## Usage
 To use `DecimalField` in an iOS target (given it has been added to this target), it needs to be imported like this:
