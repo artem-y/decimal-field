@@ -147,10 +147,21 @@ final class DecimalFieldTests: XCTestCase {
 
     // MARK: - Test clearing
 
+    func test_isClearingZeroWhenEditingBegins_byDefault_returnsTrue() {
+        XCTAssertTrue(sut.isClearingZeroWhenEditingBegins)
+    }
+
     func test_editingDidBegin_withZero_clearsTheText() {
         sut.text = .zero
         sut.sendActions(for: .editingDidBegin)
         XCTAssertEqual(sut.text, .empty)
+    }
+
+    func test_editingDidBegin_whenIsClearingZeroWhenEditingBeginsIsFalse_keepsZero() {
+        sut.isClearingZeroWhenEditingBegins = false
+        sut.text = .zero
+        sut.sendActions(for: .editingDidBegin)
+        XCTAssertEqual(sut.text, .zero)
     }
 
     func test_editingDidEnd_withOnlyZeroInFractionalPart_clearsZero() {
