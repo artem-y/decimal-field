@@ -28,6 +28,10 @@ public class DecimalField: UITextField {
         }
     }
 
+    /// Tells the text field whether it should clear `0` on `editingDidBegin` event.
+    /// By default this property is set to `true`.
+    public var isClearingZeroWhenEditingBegins = true
+
     /// Same as the `UITextField`'s property, but the text is processed.
     ///
     /// Whenever this property is set, it filters and modifies the new value and stores the processed result.
@@ -84,7 +88,8 @@ extension DecimalField {
 
     private func addActions() {
         handleEvents(.editingDidBegin) { [weak self] in
-            self?.clearZero()
+            guard let self = self, self.isClearingZeroWhenEditingBegins else { return }
+            self.clearZero()
         }
 
         handleEvents(.editingChanged) { [weak self] in
