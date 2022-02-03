@@ -73,6 +73,14 @@ final class DecimalFieldTests: XCTestCase {
         }
     }
 
+    func test_editingDidEnd_whenIsProcessingTextWhenEditingEndsIsFalse_doesNotResetToZero() {
+        sut.isProcessingTextWhenEditingEnds = false
+        editingDidEndEvents.forEach { editingDidEndEvent in
+            sut.sendActions(for: editingDidEndEvent)
+            XCTAssertNotEqual(sut.text, .zero)
+        }
+    }
+
     func test_editingDidEnd_whenTextIsNil_setsToZero() {
         editingDidEndEvents.forEach { editingDidEndEvent in
             sut.text = nil
