@@ -20,7 +20,8 @@ public class DecimalField: UITextField {
 
     /// Tells the text field whether it should allow `minus` in the input.
     ///
-    /// By default this property is set to `true`. When the text field already has input with minus and this property is reset to `false`,
+    /// By default this property is set to `true`.
+    /// When the text field already has input with minus and this property is reset to `false`,
     /// the minus will get immediately removed.
     public var allowsNegativeNumbers = true {
         didSet {
