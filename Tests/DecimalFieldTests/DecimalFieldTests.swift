@@ -13,6 +13,8 @@ final class DecimalFieldTests: XCTestCase {
 
     private var sut: SUT!
     private var decimalFieldNib: UINib!
+    private var decimalFieldStoryboard: UIStoryboard!
+
     private let negativeIntegerText = "-123"
     private let integerText = "123"
     private let editingDidEndEvents: [UIControl.Event] = [.editingDidEnd, .editingDidEndOnExit]
@@ -23,11 +25,13 @@ final class DecimalFieldTests: XCTestCase {
         sut = SUT()
         let decimalFieldNibName = String(describing: SUT.self)
         decimalFieldNib = UINib(nibName: decimalFieldNibName, bundle: .module)
+        decimalFieldStoryboard = UIStoryboard(name: "MockViewController", bundle: .module)
     }
 
     override func tearDownWithError() throws {
         sut = nil
         decimalFieldNib = nil
+        decimalFieldStoryboard = nil
     }
 
     // MARK: - Test init
@@ -37,16 +41,24 @@ final class DecimalFieldTests: XCTestCase {
         XCTAssertEqual(sut.text, .empty)
     }
 
-    func test_emptyInit_doesNotCreateMemoryLeaks() throws {
+    func test_emptyInit_doesNotCreateMemoryLeaks() {
         weak var sut = self.sut
         self.sut = nil
         XCTAssertNil(sut)
     }
 
-    func test_nib_instantiate_createsNonNilDecimalField() throws {
+    func test_nib_instantiate_createsNonNilDecimalField() {
         let instantiatedObjects = decimalFieldNib.instantiate(withOwner: nil, options: nil)
         let sut = instantiatedObjects.first as? DecimalField
         XCTAssertNotNil(sut)
+    }
+
+    func test_storyboard_instantiate_createsNonNilDecimalField() throws {
+        let mockViewController = try XCTUnwrap(
+            decimalFieldStoryboard.instantiateInitialViewController() as? MockViewController
+        )
+        mockViewController.loadViewIfNeeded()
+        XCTAssertNotNil(mockViewController.decimalField)
     }
 
     // MARK: - Test allowing negative numbers
@@ -257,4 +269,10 @@ final class DecimalFieldTests: XCTestCase {
         sut.text = input
         XCTAssertEqual(sut.text, input)
     }
+}
+
+// MARK: - Mocks
+
+final class MockViewController: UIViewController {
+    @IBOutlet var decimalField: DecimalField!
 }
