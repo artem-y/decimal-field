@@ -15,7 +15,7 @@ import UIKit
 /// - resetting the input to `0` when editing ends and the field is empty
 /// - clearing the field when editing begins and the input is `0`
 ///
-/// These are "always on" by default, but will become customizable in the future.
+/// These are "always on" by default but can be turned off via related properties.
 public class DecimalField: UITextField {
 
     /// Tells the text field whether it should allow `minus` in the input.
