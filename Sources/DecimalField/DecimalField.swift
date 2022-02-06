@@ -35,7 +35,7 @@ public class DecimalField: UITextField {
 
     /// Tells the text field whether it should trim the text and ensure it is not empty when editing ends.
     /// By default this property is set to `true`.
-    public var isProcessingWhenEditingEnds = true
+    public var trimsAndSetsNonEmptyWhenEditingEnds = true
 
     /// Same as the `UITextField`'s property, but the text is processed.
     ///
@@ -141,7 +141,7 @@ extension DecimalField {
     }
 
     private func ensureNonEmptyTrimmedText() {
-        guard isProcessingWhenEditingEnds else { return }
+        guard trimsAndSetsNonEmptyWhenEditingEnds else { return }
         var processor = makeTextProcessor()
         text = processor.makeNonEmptyTrimmedText(from: text ?? .empty)
     }
