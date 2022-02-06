@@ -63,6 +63,29 @@ final class DecimalFieldTests: XCTestCase {
         XCTAssertTrue(sut.allowsNegativeNumbers)
     }
 
+    // MARK: - Test trimming and making non-empty when editing ends
+
+    func test_trimsAndSetsNonEmptyWhenEditingEnds_byDefault_isTrue() {
+        XCTAssertTrue(sut.trimsAndSetsNonEmptyWhenEditingEnds)
+    }
+
+    func test_trimsAndSetsNonEmptyWhenEditingEnds_whenFalse_doesNotResetToZero() {
+        sut.trimsAndSetsNonEmptyWhenEditingEnds = false
+        editingDidEndEvents.forEach { editingDidEndEvent in
+            sut.sendActions(for: editingDidEndEvent)
+            XCTAssertNotEqual(sut.text, .zero)
+        }
+    }
+
+    func test_trimsAndSetsNonEmptyWhenEditingEnds_whenFalseAndTextIsEmpty_doesNotSetToZero() {
+        sut.trimsAndSetsNonEmptyWhenEditingEnds = false
+        editingDidEndEvents.forEach { editingDidEndEvent in
+            sut.text = .empty
+            sut.sendActions(for: editingDidEndEvent)
+            XCTAssertEqual(sut.text, .empty)
+        }
+    }
+
     // MARK: - Test resetting to zero
 
     func test_editingDidEnd_whenTextIsEmpty_setsToZero() {

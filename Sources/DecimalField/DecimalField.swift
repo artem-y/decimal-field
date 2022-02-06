@@ -15,12 +15,13 @@ import UIKit
 /// - resetting the input to `0` when editing ends and the field is empty
 /// - clearing the field when editing begins and the input is `0`
 ///
-/// These are "always on" by default, but will become customizable in the future.
+/// These are "always on" by default but can be turned off via related properties.
 public class DecimalField: UITextField {
 
     /// Tells the text field whether it should allow `minus` in the input.
     ///
-    /// By default this property is set to `true`. When the text field already has input with minus and this property is reset to `false`,
+    /// By default this property is set to `true`.
+    /// When the text field already has input with minus and this property is reset to `false`,
     /// the minus will get immediately removed.
     public var allowsNegativeNumbers = true {
         didSet {
@@ -31,6 +32,10 @@ public class DecimalField: UITextField {
     /// Tells the text field whether it should clear `0` on `editingDidBegin` event.
     /// By default this property is set to `true`.
     public var isClearingZeroWhenEditingBegins = true
+
+    /// Tells the text field whether it should trim the text and ensure it is not empty when editing ends.
+    /// By default this property is set to `true`.
+    public var trimsAndSetsNonEmptyWhenEditingEnds = true
 
     /// Same as the `UITextField`'s property, but the text is processed.
     ///
@@ -136,6 +141,7 @@ extension DecimalField {
     }
 
     private func ensureNonEmptyTrimmedText() {
+        guard trimsAndSetsNonEmptyWhenEditingEnds else { return }
         var processor = makeTextProcessor()
         text = processor.makeNonEmptyTrimmedText(from: text ?? .empty)
     }
