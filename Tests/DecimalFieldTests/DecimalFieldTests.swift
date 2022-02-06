@@ -12,6 +12,7 @@ final class DecimalFieldTests: XCTestCase {
     typealias SUT = DecimalField
 
     private var sut: SUT!
+    private var decimalFieldNib: UINib!
     private let negativeIntegerText = "-123"
     private let integerText = "123"
     private let editingDidEndEvents: [UIControl.Event] = [.editingDidEnd, .editingDidEndOnExit]
@@ -20,10 +21,13 @@ final class DecimalFieldTests: XCTestCase {
 
     override func setUpWithError() throws {
         sut = SUT()
+        let decimalFieldNibName = String(describing: SUT.self)
+        decimalFieldNib = UINib(nibName: decimalFieldNibName, bundle: .module)
     }
 
     override func tearDownWithError() throws {
         sut = nil
+        decimalFieldNib = nil
     }
 
     // MARK: - Test init
@@ -37,6 +41,12 @@ final class DecimalFieldTests: XCTestCase {
         weak var sut = self.sut
         self.sut = nil
         XCTAssertNil(sut)
+    }
+
+    func test_nib_instantiate_createsNonNilDecimalField() throws {
+        let instantiatedObjects = decimalFieldNib.instantiate(withOwner: nil, options: nil)
+        let sut = instantiatedObjects.first as? DecimalField
+        XCTAssertNotNil(sut)
     }
 
     // MARK: - Test allowing negative numbers
