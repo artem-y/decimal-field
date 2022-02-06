@@ -63,6 +63,29 @@ final class DecimalFieldTests: XCTestCase {
         XCTAssertTrue(sut.allowsNegativeNumbers)
     }
 
+    // MARK: - Test processing when editing ends
+
+    func test_isProcessingWhenEditingEnds_byDefault_isTrue() {
+        XCTAssertTrue(sut.isProcessingWhenEditingEnds)
+    }
+
+    func test_isProcessingWhenEditingEnds_whenFalse_doesNotResetToZero() {
+        sut.isProcessingWhenEditingEnds = false
+        editingDidEndEvents.forEach { editingDidEndEvent in
+            sut.sendActions(for: editingDidEndEvent)
+            XCTAssertNotEqual(sut.text, .zero)
+        }
+    }
+
+    func test_isProcessingWhenEditingEnds_whenFalseAndTextIsEmpty_doesNotSetToZero() {
+        sut.isProcessingWhenEditingEnds = false
+        editingDidEndEvents.forEach { editingDidEndEvent in
+            sut.text = .empty
+            sut.sendActions(for: editingDidEndEvent)
+            XCTAssertEqual(sut.text, .empty)
+        }
+    }
+
     // MARK: - Test resetting to zero
 
     func test_editingDidEnd_whenTextIsEmpty_setsToZero() {
@@ -70,27 +93,6 @@ final class DecimalFieldTests: XCTestCase {
             sut.text = .empty
             sut.sendActions(for: editingDidEndEvent)
             XCTAssertEqual(sut.text, .zero)
-        }
-    }
-
-    func test_isProcessingTextWhenEditingEnds_byDefault_isTrue() {
-        XCTAssertTrue(sut.isProcessingTextWhenEditingEnds)
-    }
-
-    func test_editingDidEnd_whenIsProcessingTextWhenEditingEndsIsFalse_doesNotResetToZero() {
-        sut.isProcessingTextWhenEditingEnds = false
-        editingDidEndEvents.forEach { editingDidEndEvent in
-            sut.sendActions(for: editingDidEndEvent)
-            XCTAssertNotEqual(sut.text, .zero)
-        }
-    }
-
-    func test_editingDidEnd_whenIsProcessingTextWhenEditingEndsIsFalse_andTextIsEmpty_doesNotSetToZero() {
-        sut.isProcessingTextWhenEditingEnds = false
-        editingDidEndEvents.forEach { editingDidEndEvent in
-            sut.text = .empty
-            sut.sendActions(for: editingDidEndEvent)
-            XCTAssertEqual(sut.text, .empty)
         }
     }
 
