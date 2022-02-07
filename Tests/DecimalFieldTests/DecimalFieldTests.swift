@@ -12,18 +12,32 @@ final class DecimalFieldTests: XCTestCase {
     typealias SUT = DecimalField
 
     private var sut: SUT!
+    private var decimalFieldNib: UINib!
+    private var mockViewControllerStoryboard: UIStoryboard!
+
     private let negativeIntegerText = "-123"
     private let integerText = "123"
-    private let editingDidEndEvents: [UIControl.Event] = [.editingDidEnd, .editingDidEndOnExit]
+    private let editingDidEndEvents: [UIControl.Event] = [
+        .editingDidEnd,
+        .editingDidEndOnExit
+    ]
+    private lazy var allEvents = editingDidEndEvents + [
+        .editingDidBegin,
+        .editingChanged
+    ]
 
     // MARK: - Lifecycle
 
     override func setUpWithError() throws {
         sut = SUT()
+        decimalFieldNib = makeDecimalFieldNib()
+        mockViewControllerStoryboard = makeMockViewControllerStoryboard()
     }
 
     override func tearDownWithError() throws {
         sut = nil
+        decimalFieldNib = nil
+        mockViewControllerStoryboard = nil
     }
 
     // MARK: - Test init
@@ -33,10 +47,46 @@ final class DecimalFieldTests: XCTestCase {
         XCTAssertEqual(sut.text, .empty)
     }
 
-    func test_emptyInit_doesNotCreateMemoryLeaks() throws {
+    func test_emptyInit_doesNotCreateMemoryLeaks() {
         weak var sut = self.sut
         self.sut = nil
         XCTAssertNil(sut)
+    }
+
+    func test_emptyInit_addsActionsForControlEvents() throws {
+        let actions = getUIActions(from: sut, for: allEvents)
+        XCTAssertFalse(actions.isEmpty)
+    }
+
+    func test_nib_instantiate_createsNonNilDecimalField() {
+        let instantiatedObjects = decimalFieldNib.instantiate(withOwner: nil, options: nil)
+        sut = instantiatedObjects.first as? DecimalField
+        XCTAssertNotNil(sut)
+    }
+
+    func test_nib_instantiate_addsActionsForControlEvents() throws {
+        let instantiatedObjects = decimalFieldNib.instantiate(withOwner: nil, options: nil)
+        sut = try XCTUnwrap(instantiatedObjects.first as? DecimalField)
+        let actions = getUIActions(from: sut, for: allEvents)
+        XCTAssertFalse(actions.isEmpty)
+    }
+
+    func test_storyboard_instantiate_createsNonNilDecimalField() throws {
+        let mockViewController = try XCTUnwrap(
+            mockViewControllerStoryboard.instantiateInitialViewController() as? MockViewController
+        )
+        mockViewController.loadViewIfNeeded()
+        XCTAssertNotNil(mockViewController.decimalField)
+    }
+
+    func test_storyboard_instantiate_addsActionsForControlEvents() throws {
+        let mockViewController = try XCTUnwrap(
+            mockViewControllerStoryboard.instantiateInitialViewController() as? MockViewController
+        )
+        mockViewController.loadViewIfNeeded()
+        let sut = try XCTUnwrap(mockViewController.decimalField)
+        let actions = getUIActions(from: sut, for: allEvents)
+        XCTAssertFalse(actions.isEmpty)
     }
 
     // MARK: - Test allowing negative numbers
@@ -247,4 +297,35 @@ final class DecimalFieldTests: XCTestCase {
         sut.text = input
         XCTAssertEqual(sut.text, input)
     }
+}
+
+// MARK: - Private Methods
+
+extension DecimalFieldTests {
+    private func makeDecimalFieldNib() -> UINib {
+        let nibName = String(describing: SUT.self)
+        return UINib(nibName: nibName, bundle: .module)
+    }
+
+    private func makeMockViewControllerStoryboard() -> UIStoryboard {
+        let storyboardName = String(describing: MockViewController.self)
+        return UIStoryboard(name: storyboardName, bundle: .module)
+    }
+
+    private func getUIActions(from sut: SUT, for controlEvents: [UIControl.Event]) -> Set<UIAction> {
+        var actions: Set<UIAction> = []
+
+        sut.enumerateEventHandlers { action, _, event, _ in
+            guard let action = action, allEvents.contains(event) else { return }
+            actions.insert(action)
+        }
+
+        return actions
+    }
+}
+
+// MARK: - Mocks
+
+final class MockViewController: UIViewController {
+    @IBOutlet var decimalField: DecimalField!
 }
