@@ -60,6 +60,7 @@ public class DecimalField: UITextField {
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        addActions()
     }
 }
 
