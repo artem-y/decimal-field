@@ -23,7 +23,7 @@ open class DecimalField: UITextField {
     /// By default this property is set to `true`.
     /// When the text field already has input with minus and this property is reset to `false`,
     /// the minus will get immediately removed.
-    public var allowsNegativeNumbers = true {
+    open var allowsNegativeNumbers = true {
         didSet {
             trimMinusIfNeeded()
         }
@@ -31,16 +31,16 @@ open class DecimalField: UITextField {
 
     /// Tells the text field whether it should clear `0` on `editingDidBegin` event.
     /// By default this property is set to `true`.
-    public var isClearingZeroWhenEditingBegins = true
+    open var isClearingZeroWhenEditingBegins = true
 
     /// Tells the text field whether it should trim the text and ensure it is not empty when editing ends.
     /// By default this property is set to `true`.
-    public var trimsAndSetsNonEmptyWhenEditingEnds = true
+    open var trimsAndSetsNonEmptyWhenEditingEnds = true
 
     /// Same as the `UITextField`'s property, but the text is processed.
     ///
     /// Whenever this property is set, it filters and modifies the new value and stores the processed result.
-    public override var text: String? {
+    open override var text: String? {
         get {
             super.text
         }
