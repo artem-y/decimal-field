@@ -16,7 +16,7 @@ import UIKit
 /// - clearing the field when editing begins and the input is `0`
 ///
 /// These are "always on" by default but can be turned off via related properties.
-public class DecimalField: UITextField {
+open class DecimalField: UITextField {
 
     /// Tells the text field whether it should allow `minus` in the input.
     ///
@@ -58,7 +58,7 @@ public class DecimalField: UITextField {
         addActions()
     }
 
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         addActions()
     }
